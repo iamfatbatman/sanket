@@ -76,7 +76,7 @@ class _SignToSpeechScreenState extends State<SignToSpeechScreen>
                 padding: const EdgeInsets.all(28),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [primary, primary.withOpacity(.75)],
+                    colors: [primary, primary.withValues(alpha: .75)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -124,7 +124,7 @@ class _SignToSpeechScreenState extends State<SignToSpeechScreen>
                   borderRadius: BorderRadius.circular(26),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(.05),
+                      color: Colors.black.withValues(alpha: .05),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),
@@ -168,7 +168,7 @@ class _SignToSpeechScreenState extends State<SignToSpeechScreen>
                   borderRadius: BorderRadius.circular(26),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(.05),
+                      color: Colors.black.withValues(alpha: .05),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),
@@ -208,7 +208,7 @@ class _SignToSpeechScreenState extends State<SignToSpeechScreen>
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(.05),
+                      color: Colors.black.withValues(alpha: .05),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),
@@ -248,8 +248,9 @@ class _SignToSpeechScreenState extends State<SignToSpeechScreen>
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: primary.withOpacity(
-                                        0.3 *
+                                      color: primary.withValues(
+                                        alpha:
+                                            0.3 *
                                             (1 - _speakerAnimController.value),
                                       ),
                                       width: 2,
@@ -264,8 +265,9 @@ class _SignToSpeechScreenState extends State<SignToSpeechScreen>
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: primary.withOpacity(
-                                        0.4 *
+                                      color: primary.withValues(
+                                        alpha:
+                                            0.4 *
                                             (1 - _speakerAnimController.value),
                                       ),
                                       width: 1.5,
@@ -277,7 +279,7 @@ class _SignToSpeechScreenState extends State<SignToSpeechScreen>
                                 width: 70,
                                 height: 70,
                                 decoration: BoxDecoration(
-                                  color: primary.withOpacity(.12),
+                                  color: primary.withValues(alpha: .12),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(

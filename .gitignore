@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Ignore all Flutter build outputs
+**/build/
+android/app/build/
+android/build/

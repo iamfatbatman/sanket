@@ -26,6 +26,12 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Sanket needs microphone access to recognize your speech and convert it into sign language.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Sanket needs camera access to recognize sign language and convert it into text and speech.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Sanket uses speech recognition to turn spoken words into sign language output.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

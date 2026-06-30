@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../widgets/animation_placeholder.dart';
+import 'package:speech_to_text/speech_to_text.dart' as speech_to_text;
+import '../widgets/alphabet_sign_video_player.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/transcript_card.dart';
 
@@ -13,12 +14,17 @@ class SpeechToSignScreen extends StatefulWidget {
 class _SpeechToSignScreenState extends State<SpeechToSignScreen>
     with SingleTickerProviderStateMixin {
   bool isListening = false;
+  bool _speechEnabled = false;
+  String? _speechLocaleId;
+  String _statusText = "Tap start and allow microphone access.";
   String recognizedText = "";
   late AnimationController _micAnimController;
+  late final speech_to_text.SpeechToText _speechToText;
 
   @override
   void initState() {
     super.initState();
+    _speechToText = speech_to_text.SpeechToText();
     _micAnimController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
@@ -27,18 +33,137 @@ class _SpeechToSignScreenState extends State<SpeechToSignScreen>
 
   @override
   void dispose() {
+    _speechToText.cancel();
     _micAnimController.dispose();
     super.dispose();
   }
 
-  void startListening() {
-    setState(() => isListening = true);
-    _micAnimController.repeat();
-    // Add speech-to-text logic here
+  Future<bool> _initializeSpeech() async {
+    if (_speechEnabled) {
+      return true;
+    }
+
+    final available = await _speechToText.initialize(
+      onStatus: _handleSpeechStatus,
+      onError: (error) {
+        if (!mounted) {
+          return;
+        }
+
+        setState(() {
+          isListening = false;
+          _statusText = error.errorMsg;
+        });
+        _micAnimController.stop();
+      },
+    );
+
+    if (!mounted) {
+      return false;
+    }
+
+    final englishLocaleId = available ? await _findEnglishLocaleId() : null;
+    if (!mounted) {
+      return false;
+    }
+
+    setState(() {
+      _speechEnabled = available;
+      _speechLocaleId = englishLocaleId;
+      _statusText = available
+          ? englishLocaleId == null
+                ? "Ready to listen. English speech is not installed, using device default."
+                : "Ready to listen in English."
+          : "Speech recognition is not available on this device.";
+    });
+
+    return available;
   }
 
-  void stopListening() {
-    setState(() => isListening = false);
+  Future<String?> _findEnglishLocaleId() async {
+    final locales = await _speechToText.locales();
+
+    for (final locale in locales) {
+      final normalized = locale.localeId.toLowerCase().replaceAll('-', '_');
+      if (normalized == 'en_us') {
+        return locale.localeId;
+      }
+    }
+
+    for (final locale in locales) {
+      final normalized = locale.localeId.toLowerCase().replaceAll('-', '_');
+      if (normalized.startsWith('en_') || normalized == 'en') {
+        return locale.localeId;
+      }
+    }
+
+    return null;
+  }
+
+  void _handleSpeechStatus(String status) {
+    if (!mounted) {
+      return;
+    }
+
+    final listening = status == speech_to_text.SpeechToText.listeningStatus;
+
+    setState(() {
+      isListening = listening;
+      _statusText = listening ? "Listening..." : "Ready to listen.";
+    });
+
+    if (listening) {
+      _micAnimController.repeat();
+    } else {
+      _micAnimController.stop();
+    }
+  }
+
+  Future<void> startListening() async {
+    final available = await _initializeSpeech();
+    if (!available || isListening) {
+      return;
+    }
+
+    setState(() {
+      isListening = true;
+      _statusText = _speechLocaleId == null
+          ? "Listening with device default language..."
+          : "Listening in English...";
+    });
+    _micAnimController.repeat();
+
+    await _speechToText.listen(
+      onResult: (result) {
+        if (!mounted) {
+          return;
+        }
+
+        setState(() {
+          recognizedText = result.recognizedWords;
+        });
+      },
+      listenOptions: speech_to_text.SpeechListenOptions(
+        cancelOnError: true,
+        partialResults: true,
+        listenMode: speech_to_text.ListenMode.dictation,
+        listenFor: const Duration(seconds: 45),
+        pauseFor: const Duration(seconds: 5),
+        localeId: _speechLocaleId,
+      ),
+    );
+  }
+
+  Future<void> stopListening() async {
+    await _speechToText.stop();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      isListening = false;
+      _statusText = "Ready to listen.";
+    });
     _micAnimController.stop();
   }
 
@@ -65,7 +190,7 @@ class _SpeechToSignScreenState extends State<SpeechToSignScreen>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   gradient: LinearGradient(
-                    colors: [primary, primary.withOpacity(.75)],
+                    colors: [primary, primary.withValues(alpha: .75)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -118,7 +243,7 @@ class _SpeechToSignScreenState extends State<SpeechToSignScreen>
                   borderRadius: BorderRadius.circular(26),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(.05),
+                      color: Colors.black.withValues(alpha: .05),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),
@@ -141,8 +266,10 @@ class _SpeechToSignScreenState extends State<SpeechToSignScreen>
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: primary.withOpacity(
-                                        0.3 * (1 - _micAnimController.value),
+                                      color: primary.withValues(
+                                        alpha:
+                                            0.3 *
+                                            (1 - _micAnimController.value),
                                       ),
                                       width: 2,
                                     ),
@@ -155,8 +282,10 @@ class _SpeechToSignScreenState extends State<SpeechToSignScreen>
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: primary.withOpacity(
-                                        0.4 * (1 - _micAnimController.value),
+                                      color: primary.withValues(
+                                        alpha:
+                                            0.4 *
+                                            (1 - _micAnimController.value),
                                       ),
                                       width: 1.5,
                                     ),
@@ -166,7 +295,7 @@ class _SpeechToSignScreenState extends State<SpeechToSignScreen>
                                 width: 80,
                                 height: 80,
                                 decoration: BoxDecoration(
-                                  color: primary.withOpacity(.12),
+                                  color: primary.withValues(alpha: .12),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
@@ -189,7 +318,8 @@ class _SpeechToSignScreenState extends State<SpeechToSignScreen>
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Speak clearly into your microphone.",
+                      _statusText,
+                      textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
                     const SizedBox(height: 24),
@@ -224,15 +354,15 @@ class _SpeechToSignScreenState extends State<SpeechToSignScreen>
                   borderRadius: BorderRadius.circular(26),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(.05),
+                      color: Colors.black.withValues(alpha: .05),
                       blurRadius: 18,
                       offset: const Offset(0, 8),
                     ),
                   ],
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: AnimationPlaceholder(title: "Sign Animation Preview"),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: AlphabetSignVideoPlayer(text: recognizedText),
                 ),
               ),
 

@@ -34,7 +34,7 @@ class FeatureCard extends StatelessWidget {
             border: Border.all(color: Colors.grey.shade200),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(.05),
+                color: Colors.black.withValues(alpha: .05),
                 blurRadius: 18,
                 offset: const Offset(0, 10),
               ),
@@ -52,12 +52,10 @@ class FeatureCard extends StatelessWidget {
                       height: 62,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: primary.withOpacity(.12),
+                        color: primary.withValues(alpha: .12),
                       ),
                       child: Icon(icon, color: primary, size: 30),
                     ),
-
-                    const Spacer(),
 
                     Container(
                       width: 36,

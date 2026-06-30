@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class HistoryTile extends StatelessWidget {
-  const HistoryTile({super.key, required this.date, required this.time, required this.type});
+  const HistoryTile({
+    super.key,
+    required this.date,
+    required this.time,
+    required this.type,
+  });
 
   final String date;
   final String time;
@@ -16,7 +21,7 @@ class HistoryTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -30,16 +35,16 @@ class HistoryTile extends StatelessWidget {
               children: [
                 Text(
                   date,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   time,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 6),
                 Text(

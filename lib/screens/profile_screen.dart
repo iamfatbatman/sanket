@@ -20,7 +20,7 @@ class ProfileScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 16,
                     offset: const Offset(0, 8),
                   ),
@@ -30,7 +30,9 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
                     child: const Icon(Icons.person, size: 42),
                   ),
                   const SizedBox(height: 14),
@@ -52,10 +54,16 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             const SettingTile(title: 'Language', icon: Icons.language_outlined),
-            const SettingTile(title: 'Theme', icon: Icons.brightness_6_outlined),
+            const SettingTile(
+              title: 'Theme',
+              icon: Icons.brightness_6_outlined,
+            ),
             const SettingTile(title: 'Help', icon: Icons.help_outline),
             const SettingTile(title: 'About', icon: Icons.info_outline),
-            const SettingTile(title: 'Privacy Policy', icon: Icons.privacy_tip_outlined),
+            const SettingTile(
+              title: 'Privacy Policy',
+              icon: Icons.privacy_tip_outlined,
+            ),
             const SizedBox(height: 18),
             SizedBox(
               width: double.infinity,

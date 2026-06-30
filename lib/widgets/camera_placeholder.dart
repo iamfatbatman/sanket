@@ -19,7 +19,7 @@ class CameraPlaceholder extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(.12),
+              color: Colors.black.withValues(alpha: .12),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),
@@ -45,7 +45,7 @@ class CameraPlaceholder extends StatelessWidget {
                     width: 90,
                     height: 90,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(.08),
+                      color: Colors.white.withValues(alpha: .08),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(

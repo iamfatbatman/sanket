@@ -19,7 +19,7 @@ class TranscriptCard extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.04),
+            color: Colors.black.withValues(alpha: .04),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -34,7 +34,7 @@ class TranscriptCard extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: primary.withOpacity(.12),
+                  color: primary.withValues(alpha: .12),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.translate_rounded, color: primary, size: 22),
